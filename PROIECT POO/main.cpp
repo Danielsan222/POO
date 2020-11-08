@@ -230,12 +230,7 @@ class Client
 
     }
 
-
-
-
-
-
-    void Citire()
+        void Citire()
     {
         char aux[100];
 
@@ -276,6 +271,10 @@ class Client
 
 
     }
+        int getID()
+        {
+            return this->ID_Persoana;
+        }
 
         int getnrMarimi(){
             return this->nrMarimi;
@@ -303,19 +302,27 @@ class Client
         bool getAbonament(){
         return this->abonament;
         }
+        int getnumarCalorii()
+        {
+            return this->numarCaloriiMentinere;
+        }
 
-        void setVarsta(int a){
+        void setVarsta(int a)
+        {
         this->varsta = a;
         }
 
-        void setNume(char* a){
+
+        void setNume(char* a)
+        {
             if (this->nume!=nullptr)
                 delete [] this->nume;
             this->nume = new char [strlen(a)+1];
                 strcpy(this->nume,a);
         }
 
-        void setMarimi(int* a, int b){
+        void setMarimi(int* a, int b)
+        {
             if (this->marimi!=nullptr)
                 delete [] this->marimi;
             this->nrMarimi = b;
@@ -325,7 +332,8 @@ class Client
 
         }
 
-        void setGreutate(float* a){
+        void setGreutate(float* a)
+        {
         if(this->greutate!=nullptr)
             delete[] this->greutate;
         this->greutate = new float[2];
@@ -333,15 +341,18 @@ class Client
             this->greutate[i] = a[i];
         }
 
-        void setGenul(char b[1]){
+        void setGenul(char b[1])
+        {
         this->genul [1] = b[1];
         }
 
-        void setnrMarimi(int a){
+        void setnrMarimi(int a)
+        {
         this->nrMarimi = a;
         }
 
-        double calculNumarCalorii(int a, int b, int c, char aux[1]){
+        double calculNumarCalorii(int a, int b, int c, char aux[1])
+        {
             strcpy(this->genul,aux);
             if (strcmp(aux, "F") == 0)
             this->numarCaloriiMentinere = 10 * a + 6.25 * b - 5*c + 5;
@@ -352,9 +363,8 @@ class Client
         return this->numarCaloriiMentinere;
         }
 
-
-
-        ~Client(){
+        ~Client()
+        {
         if (this->marimi!=nullptr)
             delete this->marimi;
         if(this->nume!=nullptr)
@@ -501,7 +511,8 @@ public:
 
     }
 
-    friend ostream& operator<<(ostream& out, const Sala sl){
+    friend ostream& operator<<(ostream& out, const Sala sl)
+    {
     out<<"Sala cu numele "<<sl.numeSala<<" se afla in locatia cu coordonatele";
     for (int i=0;i<sl.nrCoordonate;i++)
         out<<sl.coordonate[i]<<" ";
@@ -511,6 +522,58 @@ public:
     out<<"Sala este de tipul"<<sl.conditie;
 
     return out;
+    }
+
+    friend istream& operator>>(istream& in, Sala& sl)
+    {
+        char aux[100];
+
+        cout<<"Introduceti numele salii: \n";
+        in.get(aux,100);
+        if(sl.numeSala!=NULL)
+                delete [] sl.numeSala;
+        sl.numeSala = new char [strlen(aux)+1];
+        strcpy(sl.numeSala,aux);
+
+        cout<<"Introduceti codul ZIP :\n";
+        in>>sl.codZIP;
+
+        cout<<"Introduceti numarul de coordonate pe care vreti sa le introduceti: \n";
+        in>>sl.nrCoordonate;
+
+        if(sl.coordonate!=NULL)
+            delete []sl.coordonate;
+
+        sl.coordonate = new float [sl.nrCoordonate];
+        for (int i =0;i<sl.nrCoordonate;i++)
+        {
+            cout<<"Introduceti coordonata cu numarul: " << i+1<< "\n";
+            in>>sl.coordonate[i];
+        }
+
+        cout<<"Introduceti numarul de persoane care sunt abonate la aceasta sala: \n";
+        in>>sl.nrPersoane;
+        sl.persoaneAbonate = new int[sl.nrPersoane];
+
+        if(sl.persoaneAbonate!=NULL)
+            delete sl.persoaneAbonate;
+
+        for (int i =0 ;i<sl.nrPersoane;i++)
+        {
+            cout<<"Introduceti ID-ul persoanei cu numarul" <<i+1<< "\n";
+            in>>sl.persoaneAbonate[i];
+        }
+
+        cout<<"Introduceti zilele in care sala este deschisa : 0(Inchis), 1(Deschisa) :\n" ;
+
+        for (int i = 0;i<7;i++)
+        {
+                cout<<"Introduceti disponibilitatea pentru ziua "<<i+1<<" \n";
+                in>>sl.zileDeschise[i];
+        }
+
+        cout<<"Introduceti tipul salii";
+        in>>sl.conditie[1];
     }
 
     void Citire()
@@ -689,6 +752,8 @@ class ProgramAntrenament {//O sa aiba sens cand invatam mostenirile.
 
 
 };
+
+
 class Imbracaminte{//O sa devina clasa mostenita impreuna cu clasa pentru suplimente
     const int ID_produs;
     char* numeProdus;
@@ -778,7 +843,82 @@ public:
 
         }
     }
+    friend ostream& operator<<(ostream& out, const Imbracaminte im)
+    {
+        out<<"\n Produsul cu numele "<<im.numeProdus<<" si cu culoarea"<< im.culoare<<" este disponibil in marimea"<<im.marime;
+        out<<"Acesta are pretul de "<<im.pret;
+    }
 
+    friend istream& operator>>(istream& in, Imbracaminte im)
+    {
+        char aux[100];
+        cout<<"Introduceti numele produsului: \n";
+        in.get (aux,100);
+        im.numeProdus = new char[strlen(aux)+1];
+        strcpy(im.numeProdus,aux);
+        delete [] aux;
+
+        cout<<"Introduceti tipul produsului : \n";
+        in.get(aux,100);
+        im.tipProdus = new char [strlen(aux)+1];
+        strcpy(im.tipProdus,aux);
+        delete [] aux;
+
+        cout<<"Introduceti marimea produsului : \n";
+        in.get (aux,100);
+        im.marime = new char[strlen(aux)+1];
+        strcpy(im.marime, aux);
+
+        cout<<"Introduceti pretul :";
+        in>>im.pret;
+
+        cout<<"Introduceti culoarea :";
+        in.get(im.culoare,1);
+
+        cout<<"Introduceti disponibilitatea";
+        in>>im.disponibilitate;
+
+        return in;
+    }
+    void Citire()
+    {
+        char aux[100];
+        cout<<"Introduceti numele produsului: \n";
+        cin.get (aux,100);
+        this->numeProdus = new char[strlen(aux)+1];
+        strcpy(this->numeProdus,aux);
+        delete [] aux;
+
+        cout<<"Introduceti tipul produsului : \n";
+        cin.get(aux,100);
+        this->tipProdus = new char [strlen(aux)+1];
+        strcpy(this->tipProdus,aux);
+        delete [] aux;
+
+        cout<<"Introduceti marimea produsului : \n";
+        cin.get (aux,100);
+        this->marime = new char[strlen(aux)+1];
+        strcpy(this->marime, aux);
+
+        cout<<"Introduceti pretul :";
+        cin>>this->pret;
+
+        cout<<"Introduceti culoarea :";
+        cin.get(this->culoare,1);
+
+        cout<<"Introduceti disponibilitatea";
+        cin>>this->disponibilitate;
+    }
+
+    ~Imbracaminte()
+    {
+        if(this->numeProdus!=nullptr)
+            delete this->numeProdus;
+        if(this->tipProdus!=nullptr)
+            delete this->tipProdus;
+        if(this->marime!=nullptr)
+            delete this->marime;
+    }
 
 };
 
@@ -905,6 +1045,8 @@ public:
         cout<<"Este disponibil acest produs? ";
         in>>su.disponibilitate;
 
+        return in;
+
     }
 
     void Citire()
@@ -965,20 +1107,15 @@ public:
                 }
     }
 
-
-
-
-
+    ~Suplimente()
+    {
+        if(this->numeProdus!=nullptr)
+            delete this->numeProdus;
+    }
 
 };
 
 int main()
 {
-
-    Suplimente s3;
-    cin>>s3;
-    cout<<s3;
-    cout<<s3.tipSupliment();
-
     return 0;
 }

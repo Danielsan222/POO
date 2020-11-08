@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/denda/Desktop/Drive/Proiecte POO/Drobnitchi-Daniel-POO/main.cpp
+iostream
+-
+cstring
+-
+

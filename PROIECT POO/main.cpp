@@ -37,7 +37,8 @@ class Client
 
 
 
-    Client(int id, bool abonament,int nrMarimi, int* marimi, char* nume, int varsta, float* greutate, double numarCaloriiMentinere, char genul [1]):ID_Persoana(id){
+    Client(int id, bool abonament,int nrMarimi, int* marimi, char* nume, int varsta, float* greutate, double numarCaloriiMentinere, char genul [1]):ID_Persoana(id)
+    {
 
         this->varsta = varsta;
         this->nume = new char [strlen(nume)+1];
@@ -63,7 +64,8 @@ class Client
 
     }
 
-    Client(const Client& cl):ID_Persoana(cl.ID_Persoana){
+    Client(const Client& cl):ID_Persoana(cl.ID_Persoana)
+    {
         this->varsta = cl.varsta;
 
         this->nume = new char [strlen(nume)+1];
@@ -87,9 +89,11 @@ class Client
 
         }
 
-    Client& operator= (const Client& cl){
+    Client& operator= (const Client& cl)
+    {
 
-        if(this!=&cl){
+        if(this!=&cl)
+            {
         this->varsta = cl.varsta;
 
         this->nrMarimi = cl.nrMarimi;
@@ -122,7 +126,8 @@ class Client
     }
     }
 
-    friend ostream& operator<<(ostream& out, const Client cl){
+    friend ostream& operator<<(ostream& out, const Client cl)
+    {
 
     out<<"\nClientuL "<<cl.nume<<" are urmatoarele marimi";
     for (int i =0; i<cl.nrMarimi;i++){
@@ -135,7 +140,8 @@ class Client
 
 
     }
-    friend istream& operator>>(istream& in, Client& cl){
+    friend istream& operator>>(istream& in, Client& cl)
+    {
 
     char aux[100];
 
@@ -356,10 +362,10 @@ class Client
             strcpy(this->genul,aux);
             if (strcmp(aux, "F") == 0)
             this->numarCaloriiMentinere = 10 * a + 6.25 * b - 5*c + 5;
-            if (strcmp(aux, "M") == 0){
+            if (strcmp(aux, "M") == 0)
             this->numarCaloriiMentinere = 10* a +6.25 * b - 5 *c + 161;
 
-        }
+
         return this->numarCaloriiMentinere;
         }
 
@@ -509,6 +515,16 @@ public:
         this->conditie[1] = sl.conditie[1];
     }
 
+    }
+     float operator [](int index)
+    {
+        if(index<7&&index>0)
+            return zileDeschise[index];
+        else
+        {
+            cout<<"Nu se gaseste index-ul";
+            return -1;
+        }
     }
 
     friend ostream& operator<<(ostream& out, const Sala sl)
@@ -727,9 +743,7 @@ public:
         }
     }
 
-
-
-    ~Sala()
+        ~Sala()
     {
         if(this->coordonate!=nullptr)
             delete []this->coordonate;
@@ -742,17 +756,11 @@ public:
 
 };
 
-
-
-
 class ProgramAntrenament {//O sa aiba sens cand invatam mostenirile.
     int* zileDisponibile;
 
 
-
-
 };
-
 
 class Imbracaminte{//O sa devina clasa mostenita impreuna cu clasa pentru suplimente
     const int ID_produs;
@@ -847,6 +855,16 @@ public:
     {
         out<<"\n Produsul cu numele "<<im.numeProdus<<" si cu culoarea"<< im.culoare<<" este disponibil in marimea"<<im.marime;
         out<<"Acesta are pretul de "<<im.pret;
+    }
+
+    bool operator == (Imbracaminte& im)
+    {
+        if (strcmp(this->tipProdus,im.tipProdus) == strcmp(this->culoare, im.culoare)== 1)
+            return true;
+        else
+        {
+            return false;
+        }
     }
 
     friend istream& operator>>(istream& in, Imbracaminte im)
@@ -944,8 +962,6 @@ public:
         for (int i =0;i<3;i++)
             macrouri[i] = 0;
         pret = 0;
-
-
     }
 
     Suplimente(int id, double valoareCalorica, char* numeProdus, char categorie[3], int macrouri[3], int pret, bool disponibilitate):ID_produs(id)
@@ -1114,8 +1130,22 @@ public:
     }
 
 };
+    /*Nu sunt deloc terminate clasele
+    Planuri :
+    Clasa client sa fie o clasa care mosteneste clasa entitate: ENTITATE->CLIENT, ENTITATE->ANTRENOR, ENTITATE->ANGAJAT
+    Clasele Suplimente si Imbracaminte sa fie puse sub o clasa numita PRODUS.
+    ->Idee cu clasa ProgramAntrenament : ne folosim de datele din client, sala si supliment pentru un rpogram.
+    Modificate functiile specifice, nu sunt deloc terminate.
+    ->Idee cu sponsori pentru produse.
+    Raman cateva overload-uri la clasele principale.
+    Nu sunt comentate toate liniile, doar variabilele.
+    Aici adaug sau completez ideile.
+    */
 
 int main()
 {
+
     return 0;
+
+
 }

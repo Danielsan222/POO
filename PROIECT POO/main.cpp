@@ -388,6 +388,8 @@ class Client
 
 
 
+
+
 class Sala
 {
     const int ID_Sala;
@@ -551,7 +553,7 @@ public:
         sl.numeSala = new char [strlen(aux)+1];
         strcpy(sl.numeSala,aux);
 
-        cout<<"Introduceti codul ZIP :\n";
+        cout<<"Introduceti codul postal :\n";
         in>>sl.codZIP;
 
         cout<<"Introduceti numarul de coordonate pe care vreti sa le introduceti: \n";
@@ -602,7 +604,7 @@ public:
         this->numeSala = new char [strlen(aux)+1];
         strcpy(this->numeSala,aux);
 
-        cout<<"Introduceti codul ZIP :\n";
+        cout<<"Introduceti codul postal :\n";
         cin>>this->codZIP;
 
         cout<<"Introduceti numarul de coordonate pe care vreti sa le introduceti: \n";
@@ -762,7 +764,22 @@ class ProgramAntrenament {//O sa aiba sens cand invatam mostenirile.
 
 };
 
-class Imbracaminte{//O sa devina clasa mostenita impreuna cu clasa pentru suplimente
+
+/*class Produse
+{
+    const int ID_produs;
+    double valoareCalorica;
+    char* numeProdus;
+    int pret;
+    bool disponibilitate;
+public:
+    Produse:()ID_produs(000000)
+
+
+
+};*/
+
+class Imbracaminte {//O sa devina clasa mostenita impreuna cu clasa pentru suplimente
     const int ID_produs;
     char* numeProdus;
     bool disponibilitate;
@@ -1144,7 +1161,12 @@ public:
 
 int main()
 {
-
+    Client c3;
+    cin>>c3;
+    c3++;
+    cout<<c3;
+    c3+10;
+    cout<<c3;
     return 0;
 
 

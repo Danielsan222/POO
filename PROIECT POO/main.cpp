@@ -765,37 +765,113 @@ class ProgramAntrenament {//O sa aiba sens cand invatam mostenirile.
 };
 
 
-/*class Produse
+class Produse
 {
     const int ID_produs;
-    double valoareCalorica;
     char* numeProdus;
     int pret;
     bool disponibilitate;
 public:
-    Produse:()ID_produs(000000)
-
-
-
-};*/
-
-class Imbracaminte {//O sa devina clasa mostenita impreuna cu clasa pentru suplimente
-    const int ID_produs;
-    char* numeProdus;
-    bool disponibilitate;
-    int pret;
-    char* marime;
-    char* tipProdus;
-    char culoare[1];//G=Galben,V=verde,A=Albastru,W=Alb,N-Negru,R-Rosu,
-
-public:
-    Imbracaminte():ID_produs(00000)
+    Produse():ID_produs(000000)
     {
         numeProdus = "Necunoscut";
         numeProdus = new char [strlen("Necunoscut")+1];
         strcpy(this->numeProdus, "Necunoscut");
         pret = 0;
         disponibilitate = false;
+    }
+    Produse(int id, char* numeProdus, bool disponibilitate, int pret):ID_produs(id)
+    {
+        this->disponibilitate = disponibilitate;
+
+        this->pret = pret;
+
+        this->numeProdus = new char [strlen(numeProdus)+1];
+        strcpy(this->numeProdus,numeProdus);
+
+    }
+       Produse(const Produse& pr):ID_produs(pr.ID_produs)
+    {
+        this->disponibilitate = pr.disponibilitate;
+
+        this->pret = pr.pret;
+
+        this->numeProdus = new char [strlen(numeProdus)+1];
+        strcpy(this->numeProdus,pr.numeProdus);
+
+
+    }
+    Produse& operator= (const Produse& pr)
+    {
+        if(this!=&pr)
+        {
+
+        this->disponibilitate = pr.disponibilitate;
+
+        this->pret = pr.pret;
+
+        if(this->numeProdus!=NULL)
+            delete [] this->numeProdus;
+        this->numeProdus = new char [strlen(numeProdus)+1];
+        strcpy(this->numeProdus,pr.numeProdus);
+
+        }
+        return *this;
+
+    }
+    friend ostream& operator<<(ostream& out, const Produse pr)
+    {
+        out<<"\n Produsul cu numele "<<pr.numeProdus<<" si cu id-ul"<<pr.ID_produs<<" este disponibil "<<pr.disponibilitate;
+        out<<"Acesta are pretul de "<<pr.pret;
+    }
+    friend istream& operator>>(istream& in, Produse pr)
+    {
+        char aux[100];
+        cout<<"Introduceti numele produsului: \n";
+        in.get (aux,100);
+        pr.numeProdus = new char[strlen(aux)+1];
+        strcpy(pr.numeProdus,aux);
+        delete [] aux;
+
+        cout<<"Introduceti pretul :";
+        in>>pr.pret;
+
+        cout<<"Introduceti disponibilitatea";
+        in>>pr.disponibilitate;
+
+        return in;
+    }
+     void Citire()
+    {
+        char aux[100];
+        cout<<"Introduceti numele produsului: \n";
+        cin.get (aux,100);
+        this->numeProdus = new char[strlen(aux)+1];
+        strcpy(this->numeProdus,aux);
+        delete [] aux;
+
+        cout<<"Introduceti pretul :";
+        cin>>this->pret;
+
+        cout<<"Introduceti disponibilitatea";
+        cin>>this->disponibilitate;
+    }
+    ~Produse()
+    {
+        if(this->numeProdus!=nullptr)
+            delete [] this->numeProdus;
+    }
+};
+
+class Imbracaminte : public Produse
+{
+    char* marime;
+    char* tipProdus;
+    char culoare[1];//G=Galben,V=verde,A=Albastru,W=Alb,N-Negru,R-Rosu,
+
+public:
+    Imbracaminte():Produse()
+    {
         marime - "Necunoscut";
         marime = new char [strlen("Necunoscut")+1];
         strcpy(this->marime,"Necunoscut");
@@ -804,14 +880,8 @@ public:
         strcpy(this->tipProdus,"Necunoscut");
         strcpy(this->culoare," ");
     }
-    Imbracaminte(int id, char* numeProdus, bool disponibilitate, int pret, char* marime, char* tipProdus, char culoare[1]):ID_produs(id)
+    Imbracaminte(int id, char* numeProdus, bool disponibilitate, int pret, char* marime, char* tipProdus, char culoare[1]):Produse(id, numeProdus, disponibilitate, pret)
     {
-        this->disponibilitate = disponibilitate;
-
-        this->pret = pret;
-
-        this->numeProdus = new char [strlen(numeProdus)+1];
-        strcpy(this->numeProdus,numeProdus);
 
         this->marime = new char [strlen(marime)+1];
         strcpy(this->marime, marime);
@@ -822,14 +892,8 @@ public:
         this->culoare[1] = culoare[1];
     }
 
-    Imbracaminte(const Imbracaminte& im ):ID_produs(im.ID_produs)
+    Imbracaminte(const Imbracaminte& im):Produse(im)
     {
-        this->disponibilitate = im.disponibilitate;
-
-        this->pret = im.pret;
-
-        this->numeProdus = new char [strlen(numeProdus)+1];
-        strcpy(this->numeProdus,im.numeProdus);
 
         this->marime = new char [strlen(marime)+1];
         strcpy(this->marime, im.marime);
@@ -845,16 +909,10 @@ public:
     {
         if(this!=&im)
         {
-        this->disponibilitate = im.disponibilitate;
 
-        this->pret = im.pret;
-
-        if(this->numeProdus!=NULL)
-            delete [] this->numeProdus;
-        this->numeProdus = new char [strlen(numeProdus)+1];
-        strcpy(this->numeProdus,im.numeProdus);
 
         if(this->marime!=NULL)
+            Produse::operator=(im);
             delete [] this->marime;
         this->marime = new char [strlen(marime)+1];
         strcpy(this->marime, im.marime);
@@ -867,11 +925,13 @@ public:
         this->culoare[1] = im.culoare[1];
 
         }
-    }
+        return *this;
+        }
+
     friend ostream& operator<<(ostream& out, const Imbracaminte im)
     {
-        out<<"\n Produsul cu numele "<<im.numeProdus<<" si cu culoarea"<< im.culoare<<" este disponibil in marimea"<<im.marime;
-        out<<"Acesta are pretul de "<<im.pret;
+        out<<(Imbracaminte&)im;
+        out<<"Culoarea aceste haine este "<<im.culoare<<", de asemenea, marimea este"<<im.marime;
     }
 
     bool operator == (Imbracaminte& im)
@@ -884,14 +944,10 @@ public:
         }
     }
 
-    friend istream& operator>>(istream& in, Imbracaminte im)
+    friend istream& operator>>(istream& in, Imbracaminte& im)
     {
         char aux[100];
-        cout<<"Introduceti numele produsului: \n";
-        in.get (aux,100);
-        im.numeProdus = new char[strlen(aux)+1];
-        strcpy(im.numeProdus,aux);
-        delete [] aux;
+        in>>(Imbracaminte&)im;
 
         cout<<"Introduceti tipul produsului : \n";
         in.get(aux,100);
@@ -904,26 +960,16 @@ public:
         im.marime = new char[strlen(aux)+1];
         strcpy(im.marime, aux);
 
-        cout<<"Introduceti pretul :";
-        in>>im.pret;
 
         cout<<"Introduceti culoarea :";
         in.get(im.culoare,1);
-
-        cout<<"Introduceti disponibilitatea";
-        in>>im.disponibilitate;
 
         return in;
     }
     void Citire()
     {
         char aux[100];
-        cout<<"Introduceti numele produsului: \n";
-        cin.get (aux,100);
-        this->numeProdus = new char[strlen(aux)+1];
-        strcpy(this->numeProdus,aux);
-        delete [] aux;
-
+        Produse::Citire();
         cout<<"Introduceti tipul produsului : \n";
         cin.get(aux,100);
         this->tipProdus = new char [strlen(aux)+1];
@@ -935,20 +981,14 @@ public:
         this->marime = new char[strlen(aux)+1];
         strcpy(this->marime, aux);
 
-        cout<<"Introduceti pretul :";
-        cin>>this->pret;
 
         cout<<"Introduceti culoarea :";
         cin.get(this->culoare,1);
 
-        cout<<"Introduceti disponibilitatea";
-        cin>>this->disponibilitate;
     }
 
     ~Imbracaminte()
     {
-        if(this->numeProdus!=nullptr)
-            delete this->numeProdus;
         if(this->tipProdus!=nullptr)
             delete this->tipProdus;
         if(this->marime!=nullptr)
@@ -958,59 +998,41 @@ public:
 };
 
 
-class Suplimente
+class Suplimente : public Produse
 {
-    const int ID_produs;
     double valoareCalorica;
-    char* numeProdus;
     char categorie[100];
     int macrouri [3];
-    int pret;//pretul se calculeaza pentru 100g de produs.
-    bool disponibilitate;
 
 public:
 
-    Suplimente():ID_produs(00000)
+    Suplimente():Produse()
     {
         valoareCalorica = 0;
-        numeProdus = "Necunoscut";
-        numeProdus = new char [strlen("Necunoscut")+1];
-        strcpy(this->numeProdus, "Necunoscut");
         for (int i =0;i<3;i++)
             macrouri[i] = 0;
-        pret = 0;
     }
 
-    Suplimente(int id, double valoareCalorica, char* numeProdus, char categorie[3], int macrouri[3], int pret, bool disponibilitate):ID_produs(id)
+    Suplimente(int id, char* numeProdus, int pret, bool disponibilitate, double valoareCalorica, char categorie[3], int macrouri[3]):Produse(id, numeProdus, disponibilitate, pret)
     {
         this->valoareCalorica = valoareCalorica;
-        this->numeProdus = new char [strlen(numeProdus)+1];
-        strcpy(this->numeProdus,numeProdus);
 
         for (int i =0;i<3;i++)
             this->macrouri[i] = macrouri[i];
 
-        this->pret = pret;
-
         this->categorie [100]= categorie[100];
 
-        this->disponibilitate = disponibilitate;
     }
 
-    Suplimente(const Suplimente& su): ID_produs(su.ID_produs)
+    Suplimente(const Suplimente& su): Produse(su)
     {
         this->valoareCalorica = su.valoareCalorica;
-        this->numeProdus = new char [strlen(su.numeProdus)+1];
-        strcpy(this->numeProdus,su.numeProdus);
 
         for (int i =0;i<3;i++)
             this->macrouri[i] = su.macrouri[i];
 
-        this->pret = su.pret;
-
         this->categorie [100]= su.categorie[100];
 
-        this->disponibilitate = su.disponibilitate;
     }
 
     Suplimente& operator= (const Suplimente su)
@@ -1020,45 +1042,28 @@ public:
 
         this->valoareCalorica = su.valoareCalorica;
 
-        if(this->numeProdus!=NULL)
-            delete [] this->numeProdus;
-
-        this->numeProdus = new char [strlen(su.numeProdus)+1];
-        strcpy(this->numeProdus,su.numeProdus);
-
         for (int i =0;i<3;i++)
             this->macrouri[i] = su.macrouri[i];
 
-        this->pret = su.pret;
-
         this->categorie [100]= su.categorie[100];
 
-        this->disponibilitate = su.disponibilitate;
 
         }
     }
 
     friend ostream& operator<<(ostream& out, const Suplimente& su)
-    {
-        out<<"\n Produsul acesta se numeste "<< su.numeProdus<<", acesta are urmatoarea valoare calorica "<<su.valoareCalorica;
+    {   out<<(Suplimente &)su;
+        out<<" Acesta are urmatoarea valoare calorica "<<su.valoareCalorica;
         out<<"\n Coeficientul de grasimi, proteine respectiv carbohidrati este: ";
         for(int i = 0; i<3;i++)
             out<<su.macrouri[i]<<" ";
-        if(su.disponibilitate==true)
-            out<<"Acesta se gaseste in magazinul nostru, cu pretul "<<su.pret;
 
         return out;
     }
 
     friend istream& operator>>(istream& in, Suplimente& su)
     {
-        char aux[100];
-        cout<<"Introduceti numele produsului: \n";
-        in.get(aux,100);
-
-        su.numeProdus = new char [strlen(aux)+1];
-        strcpy(su.numeProdus,aux);
-
+        in>>(Suplimente)su;
         cout<<"Introduceti valoare calorica";
         in>>su.valoareCalorica ;
 
@@ -1069,14 +1074,8 @@ public:
         cout<<"Introduceti carbohidratii ";
         in>>su.macrouri[2];
 
-        cout<<"Introduceti pretul produsului ";
-        in>>su.pret;
-
         cout<<"Introduceti categoria produsului ";
         in>>su.categorie;
-
-        cout<<"Este disponibil acest produs? ";
-        in>>su.disponibilitate;
 
         return in;
 
@@ -1084,12 +1083,7 @@ public:
 
     void Citire()
     {
-        char aux[100];
-        cout<<"Introduceti numele produsului: \n";
-        cin.get(aux,100);
-
-        this->numeProdus = new char [strlen(aux)+1];
-        strcpy(this->numeProdus,aux);
+        Produse::Citire();
 
         cout<<"Introduceti valoare calorica";
         cin>>this->valoareCalorica ;
@@ -1101,28 +1095,18 @@ public:
         cout<<"Introduceti carbohidratii";
         cin>>this->macrouri[2];
 
-        cout<<"Introduceti pretul produsului";
-        cin>>this->pret;
-
         cout<<"Introduceti categoria produsului";
         cin.get(this->categorie, 100);
-
-        cout<<"Este disponibil acest produs?";
-        cin>>this->disponibilitate;
-
 
 
     }
 
     void Afisare()
     {
-        cout<<"\n Produsul acesta se numeste "<< this->numeProdus<<", acesta are urmatoarea valoare calorica "<<this->valoareCalorica;
+        cout<<" Acesta are urmatoarea valoare calorica "<<this->valoareCalorica;
         cout<<"\n Coeficientul de grasimi, proteine respectiv carbohidrati este: ";
         for(int i = 0; i<3;i++)
             cout<<this->macrouri[i]<<" ";
-        if(this->disponibilitate==true)
-            cout<<"Acesta se gaseste in magazinul nostru, cu pretul "<<this->pret<< "\n";
-
 
     }
 
@@ -1140,11 +1124,6 @@ public:
                 }
     }
 
-    ~Suplimente()
-    {
-        if(this->numeProdus!=nullptr)
-            delete this->numeProdus;
-    }
 
 };
     /*Nu sunt deloc terminate clasele

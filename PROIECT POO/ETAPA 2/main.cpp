@@ -411,6 +411,9 @@ public:
 
     Sala():ID_Sala(0000){
         codZIP=0;
+        deschisa = false;
+        nrCoordonate=0;
+        nrPersoane=0;
         numeSala = "Necunoscut";
         numeSala = new char [strlen("Necunoscut")+1];
         strcpy(numeSala, "Necunoscut");
@@ -529,7 +532,7 @@ public:
         }
     }
 
-    friend ostream& operator<<(ostream& out, const Sala sl)
+    friend ostream& operator<<(ostream& out, const Sala& sl)
     {
     out<<"Sala cu numele "<<sl.numeSala<<" se afla in locatia cu coordonatele";
     for (int i=0;i<sl.nrCoordonate;i++)
@@ -758,10 +761,81 @@ public:
 
 };
 
-class ProgramAntrenament {//O sa aiba sens cand invatam mostenirile.
-    int* zileDisponibile;
+class ProgramAntrenament
+{//CLASE ABSTRACTE >>
+protected:
+    int zileDisponibile;
+    int caloriiMentinere;
+    float *greutate;
 
+public:
+    void target()
+    {
+        if(greutate[0]<greutate[1])
+        cout<<"Target-ul dumneavoastra este sa luati in greutate";
+        if(greutate[0]>greutate[1])
+        cout<<"Target-ul dumneavoastra este sa slabiti";
+    }
+    void calcularecalorii()
+    {
+        cout<<"Targetul caloric este"<<caloriiMentinere<<endl;
+    }
+    ProgramAntrenament()
+    {
+        zileDisponibile = 0;
+        caloriiMentinere = 0;
+        greutate = NULL;
+    }
+    ProgramAntrenament(int zileDisponibile, int caloriiMentinere, float* greutate)
+    {
+        this->zileDisponibile = zileDisponibile;
 
+        this->caloriiMentinere = caloriiMentinere;
+
+        for(int i=0;i<2;i++)
+        {
+            this->greutate[i] = greutate[i];
+        }
+
+    }
+    ProgramAntrenament(const ProgramAntrenament& li)
+    {
+        this->zileDisponibile = li.zileDisponibile;
+
+        this->caloriiMentinere = li.caloriiMentinere;
+
+        for(int i=0;i<2;i++)
+            this->greutate[i] = li.greutate[i];
+
+    }
+    friend istream& operator>>(istream& in, ProgramAntrenament& p)
+    {
+        cout<<"Numarul de zile disponibile este :\n";
+        in>>p.zileDisponibile;
+        cout<<"Numarul de calorii pentru mentinere este :\n";
+        in>>p.caloriiMentinere;
+        cout<<"Greutatea actuala : \n";
+        in>>p.greutate[0];
+        cout<<"Greutate target: \n";
+    }
+
+};
+class Slabire: public ProgramAntrenament
+{
+    void calcularecalorii()
+    {
+        int calorii = caloriiMentinere - (10/caloriiMentinere) * 100;
+        cout<<"Targetul caloric este "<<calorii;
+    }
+};
+
+class Greutate : public ProgramAntrenament
+{
+    void calcularecalorii()
+    {
+        int calorii = caloriiMentinere + (10/caloriiMentinere) *100;
+        cout<<"Targetul caloric este "<<calorii;
+    }
 };
 
 
@@ -819,19 +893,20 @@ public:
         return *this;
 
     }
-    friend ostream& operator<<(ostream& out, const Produse pr)
+    friend ostream& operator<<(ostream& out, const Produse& pr)
     {
         out<<"\n Produsul cu numele "<<pr.numeProdus<<" si cu id-ul"<<pr.ID_produs<<" este disponibil "<<pr.disponibilitate;
         out<<"Acesta are pretul de "<<pr.pret;
     }
-    friend istream& operator>>(istream& in, Produse pr)
+    friend istream& operator>>(istream& in, Produse& pr)
     {
         char aux[100];
         cout<<"Introduceti numele produsului: \n";
-        in.get (aux,100);
+        in>>aux;
+        if(pr.numeProdus!=NULL)
+            delete [] pr.numeProdus;
         pr.numeProdus = new char[strlen(aux)+1];
         strcpy(pr.numeProdus,aux);
-        delete [] aux;
 
         cout<<"Introduceti pretul :";
         in>>pr.pret;
@@ -856,6 +931,11 @@ public:
         cout<<"Introduceti disponibilitatea";
         cin>>this->disponibilitate;
     }
+    void Afisare()
+    {
+        cout<<"\n Produsul cu numele "<<this->numeProdus<<" si cu id-ul"<<this->ID_produs<<" este disponibil "<<this->disponibilitate<<"\n";
+        cout<<"Acesta are pretul de "<<this->pret<<"\n";
+    }
     ~Produse()
     {
         if(this->numeProdus!=nullptr)
@@ -872,7 +952,7 @@ class Imbracaminte : public Produse
 public:
     Imbracaminte():Produse()
     {
-        marime - "Necunoscut";
+        marime = "Necunoscut";
         marime = new char [strlen("Necunoscut")+1];
         strcpy(this->marime,"Necunoscut");
         tipProdus = "Necunoscut";
@@ -928,10 +1008,10 @@ public:
         return *this;
         }
 
-    friend ostream& operator<<(ostream& out, const Imbracaminte im)
+    friend ostream& operator<<(ostream& out, const Imbracaminte& im)
     {
-        out<<(Imbracaminte&)im;
-        out<<"Culoarea aceste haine este "<<im.culoare<<", de asemenea, marimea este"<<im.marime;
+        out<<(Produse&)im;
+        out<<"Culoarea acestei haine este "<<im.culoare<<", de asemenea, marimea este"<<im.marime;
     }
 
     bool operator == (Imbracaminte& im)
@@ -947,22 +1027,27 @@ public:
     friend istream& operator>>(istream& in, Imbracaminte& im)
     {
         char aux[100];
-        in>>(Imbracaminte&)im;
+        char buf[100];
+        in>>(Produse&)im;
 
         cout<<"Introduceti tipul produsului : \n";
-        in.get(aux,100);
+        in>>aux;
+        if(im.tipProdus!= NULL)
+            delete [] im.tipProdus;
         im.tipProdus = new char [strlen(aux)+1];
         strcpy(im.tipProdus,aux);
         delete [] aux;
 
         cout<<"Introduceti marimea produsului : \n";
-        in.get (aux,100);
-        im.marime = new char[strlen(aux)+1];
-        strcpy(im.marime, aux);
+        in>>buf;
+        if(im.marime!=NULL)
+            delete []im.marime;
+        im.marime = new char[strlen(buf)+1];
+        strcpy(im.marime, buf);
 
 
         cout<<"Introduceti culoarea :";
-        in.get(im.culoare,1);
+        in>>im.culoare;
 
         return in;
     }
@@ -971,15 +1056,19 @@ public:
         char aux[100];
         Produse::Citire();
         cout<<"Introduceti tipul produsului : \n";
-        cin.get(aux,100);
+        cin>>aux;
+        if(this->tipProdus !=NULL)
+            delete [] this->tipProdus;
         this->tipProdus = new char [strlen(aux)+1];
         strcpy(this->tipProdus,aux);
-        delete [] aux;
 
+        char buf[100];
         cout<<"Introduceti marimea produsului : \n";
-        cin.get (aux,100);
-        this->marime = new char[strlen(aux)+1];
-        strcpy(this->marime, aux);
+        cin>>buf;
+        if(this->marime!=NULL)
+            delete [] this->marime;
+        this->marime = new char[strlen(buf)+1];
+        strcpy(this->marime, buf);
 
 
         cout<<"Introduceti culoarea :";
@@ -999,7 +1088,10 @@ public:
 
 
 class Suplimente : public Produse
+
 {
+
+    private:
     double valoareCalorica;
     char categorie[100];
     int macrouri [3];
@@ -1008,9 +1100,9 @@ public:
 
     Suplimente():Produse()
     {
-        valoareCalorica = 0;
+        this->valoareCalorica = 0;
         for (int i =0;i<3;i++)
-            macrouri[i] = 0;
+            this->macrouri[i] = 0;
     }
 
     Suplimente(int id, char* numeProdus, int pret, bool disponibilitate, double valoareCalorica, char categorie[3], int macrouri[3]):Produse(id, numeProdus, disponibilitate, pret)
@@ -1049,10 +1141,11 @@ public:
 
 
         }
+        return *this;
     }
 
     friend ostream& operator<<(ostream& out, const Suplimente& su)
-    {   out<<(Suplimente &)su;
+    {   out<<(Produse &)su;
         out<<" Acesta are urmatoarea valoare calorica "<<su.valoareCalorica;
         out<<"\n Coeficientul de grasimi, proteine respectiv carbohidrati este: ";
         for(int i = 0; i<3;i++)
@@ -1063,7 +1156,7 @@ public:
 
     friend istream& operator>>(istream& in, Suplimente& su)
     {
-        in>>(Suplimente)su;
+        in>>(Produse&)su;
         cout<<"Introduceti valoare calorica";
         in>>su.valoareCalorica ;
 
@@ -1085,17 +1178,17 @@ public:
     {
         Produse::Citire();
 
-        cout<<"Introduceti valoare calorica";
+        cout<<"Introduceti valoare calorica\n";
         cin>>this->valoareCalorica ;
 
-        cout<<"Introduceti grasimile";
+        cout<<"Introduceti grasimile\n";
         cin>>this->macrouri[0];
-        cout<<"Introduceti proteinele";
+        cout<<"Introduceti proteinele\n";
         cin>>this->macrouri[1];
-        cout<<"Introduceti carbohidratii";
+        cout<<"Introduceti carbohidratii\n";
         cin>>this->macrouri[2];
 
-        cout<<"Introduceti categoria produsului";
+        cout<<"Introduceti categoria produsului\n";
         cin.get(this->categorie, 100);
 
 
@@ -1103,6 +1196,7 @@ public:
 
     void Afisare()
     {
+        Produse::Afisare();
         cout<<" Acesta are urmatoarea valoare calorica "<<this->valoareCalorica;
         cout<<"\n Coeficientul de grasimi, proteine respectiv carbohidrati este: ";
         for(int i = 0; i<3;i++)
@@ -1140,11 +1234,10 @@ public:
 
 int main()
 {
-    Client c3;
-    cin>>c3;
-    c3++;
-    cout<<c3;
-    c3+10;
+
+    Imbracaminte c3;
+    c3.Citire();
+
     cout<<c3;
     return 0;
 

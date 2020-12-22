@@ -776,7 +776,7 @@ public:
         if(greutate[0]>greutate[1])
         cout<<"Target-ul dumneavoastra este sa slabiti";
     }
-    void calcularecalorii()
+    virtual void calcularecalorii()
     {
         cout<<"Targetul caloric este"<<caloriiMentinere<<endl;
     }

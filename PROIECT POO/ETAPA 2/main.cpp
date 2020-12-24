@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 
 using namespace std;
 
@@ -129,12 +130,16 @@ class Client
     friend ostream& operator<<(ostream& out, const Client cl)
     {
 
-    out<<"\nClientuL "<<cl.nume<<" are urmatoarele marimi";
+    out<<"\nClientuL "<<cl.nume<<" are urmatoarele marimi : ";
     for (int i =0; i<cl.nrMarimi;i++){
-        out<<cl.marimi[i]<<" ,";
+        out<<cl.marimi[i]<<", ";
     }
-    out<<" are"<<cl.varsta<<" ani\n";
-    out<<"Acesta are greutatea "<<cl.greutate[0]<<" si isi doreste sa ajunga la greutatea "<< cl.greutate[1];
+    out<<endl;
+    out<<"Acesta are "<<cl.varsta<<" ani\n";
+    out<<"Acesta are greutatea "<<cl.greutate[0]<<" si isi doreste sa ajunga la greutatea "<< cl.greutate[1]<<endl;
+    out<<cl.genul;
+    if(strcmp(cl.genul, "M") == 0)
+        out<<"Acesta este barbat \n";
 
     return out;
 
@@ -157,7 +162,7 @@ class Client
         cout<<"Introduceti varsta\n";
         in>>cl.varsta;
 
-        cout<<"Introduceti numarul de marimi pe care vreti sa le introduceti : Inaltime (1) / Inaltime + Bust/ Abdomen / Solduri (2/3/4)";
+        cout<<"Introduceti numarul de marimi pe care vreti sa le introduceti : Inaltime / Bust/ Abdomen / Solduri (1/2/3/4)";
         in>>cl.nrMarimi;
         cout<<"Introduceti marimile \n";
         if(cl.marimi!=NULL)
@@ -335,7 +340,6 @@ class Client
             this->marimi = new int [b];
             for (int i =0 ; i<nrMarimi;i++)
                 this->marimi[i] = marimi[i];
-
         }
 
         void setGreutate(float* a)
@@ -381,14 +385,7 @@ class Client
 
         }
 
-
-    };
-
-
-
-
-
-
+};
 
 class Sala
 {
@@ -479,12 +476,7 @@ public:
         this->persoaneAbonate[i] = sl.persoaneAbonate[i];
 
     this->conditie[1] = sl.conditie[1];
-
-
-
-
-    }
-
+}
 
     Sala& operator= (const Sala& sl){
     if (this!=&sl){
@@ -534,11 +526,12 @@ public:
 
     friend ostream& operator<<(ostream& out, const Sala& sl)
     {
-    out<<"Sala cu numele "<<sl.numeSala<<" se afla in locatia cu coordonatele";
+    out<<"Sala cu numele "<<sl.numeSala<<" se afla in locatia cu coordonatele ";
     for (int i=0;i<sl.nrCoordonate;i++)
-        out<<sl.coordonate[i]<<" ";
+    {
 
-
+       out<<sl.coordonate[i]<<" ";
+    }
     out<<"Aceasta are momentan "<< sl.nrPersoane<<" abonate";
     out<<"Sala este de tipul"<<sl.conditie;
 
@@ -778,7 +771,7 @@ public:
     }
     virtual void calcularecalorii()
     {
-        cout<<"Targetul caloric este"<<caloriiMentinere<<endl;
+        cout<<"Targetul caloric este "<<caloriiMentinere<<endl;
     }
     ProgramAntrenament()
     {
@@ -814,14 +807,30 @@ public:
         in>>p.zileDisponibile;
         cout<<"Numarul de calorii pentru mentinere este :\n";
         in>>p.caloriiMentinere;
+        if(p.greutate!=NULL)
+            delete [] p.greutate;
+        p.greutate = new float[2];
         cout<<"Greutatea actuala : \n";
         in>>p.greutate[0];
         cout<<"Greutate target: \n";
+        in>>p.greutate[1];
+        return in;
+    }
+    friend ostream& operator<<(ostream& out, const ProgramAntrenament& p)
+    {
+        out<<"Numarul de zile disponibile pentru dumneavoastra este "<<p.zileDisponibile<<", caloriile de mentinere sunt :"<<p.caloriiMentinere<<"\n";
+        return out;
+    }
+    ~ProgramAntrenament()
+    {
+        if(this->greutate!=nullptr)
+            delete this->greutate;
     }
 
 };
 class Slabire: public ProgramAntrenament
 {
+    public:
     void calcularecalorii()
     {
         int calorii = caloriiMentinere - (10/caloriiMentinere) * 100;
@@ -831,6 +840,7 @@ class Slabire: public ProgramAntrenament
 
 class Greutate : public ProgramAntrenament
 {
+    public:
     void calcularecalorii()
     {
         int calorii = caloriiMentinere + (10/caloriiMentinere) *100;
@@ -945,6 +955,7 @@ public:
 
 class Imbracaminte : public Produse
 {
+    private:
     char* marime;
     char* tipProdus;
     char culoare[1];//G=Galben,V=verde,A=Albastru,W=Alb,N-Negru,R-Rosu,
@@ -990,7 +1001,7 @@ public:
         if(this!=&im)
         {
 
-
+        Produse::operator=(im);
         if(this->marime!=NULL)
             Produse::operator=(im);
             delete [] this->marime;
@@ -1006,12 +1017,13 @@ public:
 
         }
         return *this;
-        }
+    }
 
     friend ostream& operator<<(ostream& out, const Imbracaminte& im)
     {
         out<<(Produse&)im;
         out<<"Culoarea acestei haine este "<<im.culoare<<", de asemenea, marimea este"<<im.marime;
+        return out;
     }
 
     bool operator == (Imbracaminte& im)
@@ -1026,14 +1038,16 @@ public:
 
     friend istream& operator>>(istream& in, Imbracaminte& im)
     {
+
+        in>>(Produse&)im;
         char aux[100];
         char buf[100];
-        in>>(Produse&)im;
 
         cout<<"Introduceti tipul produsului : \n";
         in>>aux;
         if(im.tipProdus!= NULL)
             delete [] im.tipProdus;
+
         im.tipProdus = new char [strlen(aux)+1];
         strcpy(im.tipProdus,aux);
         delete [] aux;
@@ -1127,11 +1141,11 @@ public:
 
     }
 
-    Suplimente& operator= (const Suplimente su)
+    Suplimente& operator= (const Suplimente& su)
     {
         if(this!=&su)
         {
-
+        Produse::operator=(su);
         this->valoareCalorica = su.valoareCalorica;
 
         for (int i =0;i<3;i++)
@@ -1139,35 +1153,35 @@ public:
 
         this->categorie [100]= su.categorie[100];
 
-
         }
         return *this;
     }
 
     friend ostream& operator<<(ostream& out, const Suplimente& su)
-    {   out<<(Produse &)su;
-        out<<" Acesta are urmatoarea valoare calorica "<<su.valoareCalorica;
+    {
+        out<<(Produse&)su;
+        out<<" Acesta are urmatoarea valoare calorica "<<su.valoareCalorica<<endl;
         out<<"\n Coeficientul de grasimi, proteine respectiv carbohidrati este: ";
         for(int i = 0; i<3;i++)
-            out<<su.macrouri[i]<<" ";
-
+            out<<su.macrouri[i]<<", ";
+        out<<endl;
         return out;
     }
 
     friend istream& operator>>(istream& in, Suplimente& su)
     {
         in>>(Produse&)su;
-        cout<<"Introduceti valoare calorica";
+        cout<<"Introduceti valoare calorica\n";
         in>>su.valoareCalorica ;
 
-        cout<<"Introduceti grasimile ";
+        cout<<"Introduceti grasimile \n";
         in>>su.macrouri[0];
-        cout<<"Introduceti proteinele ";
+        cout<<"Introduceti proteinele \n";
         in>>su.macrouri[1];
-        cout<<"Introduceti carbohidratii ";
+        cout<<"Introduceti carbohidratii \n";
         in>>su.macrouri[2];
 
-        cout<<"Introduceti categoria produsului ";
+        cout<<"Introduceti categoria produsului \n";
         in>>su.categorie;
 
         return in;
@@ -1219,11 +1233,12 @@ public:
     }
 
 
+
 };
+
     /*Nu sunt deloc terminate clasele
     Planuri :
     Clasa client sa fie o clasa care mosteneste clasa entitate: ENTITATE->CLIENT, ENTITATE->ANTRENOR, ENTITATE->ANGAJAT
-    Clasele Suplimente si Imbracaminte sa fie puse sub o clasa numita PRODUS.
     ->Idee cu clasa ProgramAntrenament : ne folosim de datele din client, sala si supliment pentru un rpogram.
     Modificate functiile specifice, nu sunt deloc terminate.
     ->Idee cu sponsori pentru produse.
@@ -1235,9 +1250,8 @@ public:
 int main()
 {
 
-    Imbracaminte c3;
+    Imbracainte c3;
     c3.Citire();
-
     cout<<c3;
     return 0;
 

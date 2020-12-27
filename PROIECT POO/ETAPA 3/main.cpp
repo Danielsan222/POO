@@ -2,7 +2,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <vector>
-
+#include <fstream>
+#include <list>
 using namespace std;
 
 class Client
@@ -164,7 +165,6 @@ class Client
 
         cout<<"Introduceti varsta :\n";
         in>>cl.varsta;
-        cout<<cl.genul[0];
 
         cout<<"Introduceti numarul de marimi pe care vreti sa le introduceti : Inaltime / Bust/ Abdomen / Solduri (1/2/3/4)";
         in>>cl.nrMarimi;
@@ -185,10 +185,11 @@ class Client
             cout   <<"Introduceti greutatea "<<i<<" \n";
             in>>cl.greutate[i];
             }
-            return in;
-    cout<<"Introduceti genul dumneavoastra : M / F ";
+        cout<<"Introduceti genul dumneavoastra : M / F ";
         in>>cl.genul[0];
         cout<<&cl.genul[0];
+        return in;
+
     }
 
    /* const Client operator++()
@@ -1258,9 +1259,9 @@ void menu_output(vector<Client*> C,int  nrDateC, vector<Produse*> P, int nrDateP
     }
     cout<<endl;
     cout<<"0.Iesire"<<endl;
-    cout<<"1.Introduceti o persoana in baza de date"<<endl;
-    cout<<"2.Introduceti o sala in baza de date"<<endl;
-    cout<<"3.Introduceti un produs in baza de date"<<endl;
+    cout<<"1.Introduceti o persoana in baza de date, de asemenea, se introduce si in fisier."<<endl;
+    cout<<"2.Introduceti o sala in baza de date, de asemenea, se introduce si in fisier."<<endl;
+    cout<<"3.Introduceti un produs in baza de date, de asemenea, se introduce si in fisier."<<endl;
     cout<<"4.Afisare informatii persoana"<<endl;
     cout<<"5.Afisare informatii sala"<<endl;
     cout<<"6.Afisare informatii produs"<<endl;
@@ -1272,7 +1273,7 @@ void menu_output(vector<Client*> C,int  nrDateC, vector<Produse*> P, int nrDateP
 
 void menu()
 {
-    int option = 0;
+    int option = 50;
     vector<Client*> Clie;
     vector<Sala*> Sal;
     vector<Produse*> Prod;
@@ -1284,9 +1285,19 @@ void menu()
     int nrDateP = 0;
     int index=0;
     int nr = 0;
+    ofstream fisier;
+    fisier.open("datein.txt");
     do
     {
+        menu_output(Clie, nrDateC, Prod, nrDateP, Sal, nrDateS, nr);
+        cin>>option;
+        nr++;
+        if(option==0)
+        {
+            fisier.close();
+            break;
 
+        }
         if(option==1)
         {
             cin>>c1;
@@ -1318,6 +1329,7 @@ void menu()
                 if(a>0&&a<=nrDateC)
                 {
                    cout<<*Clie[a-1]<<endl;
+                   fisier<<*Clie[a-1];
                 }
                 else
                 {
@@ -1341,18 +1353,21 @@ void menu()
             }
         }
         if(option==5)
-        {
+        {   int b;
             cout<<"Momentan avem "<<nrDateS<<" Sali."<<endl;
             cout<<"Alegeti sala pe care vreti sa o detaliem :"<<endl;
-            cin>>b;
-            try(b>0&&b<=nrDateS)
+            cin>> b;
+            try {
+                if (b>0&&b<=nrDateS)
                 {
                     cout<<*Sal[b-1]<<endl;
+                    fisier<<*Sal[b-1]<<endl;
                 }
                 else
                 {
                     throw(b);
                 }
+            }
                 catch(int b)
                 {
 
@@ -1360,7 +1375,7 @@ void menu()
                 cout<<"Numarul introdus de dumneavoastra este negativ, va rog sa introduceti unul pozitiv"<<endl;
                 else
                 {
-                   cout<<nrDateC;
+                    cout<<nrDateC;
                     cout<<"Numarul dumneavoastra este mai mare decat numarul de persoane pe care il avem in baza de date"<<endl;
                 }
                 }
@@ -1375,14 +1390,17 @@ void menu()
             cout<<"Momentan avem"<<nrDateP<<" produse."<<endl;
             cout<<"Alegeti produsul despre care vreti sa vorbim: "<<endl;
             cin>>c;
-            try(c>0&&c<=nrDateS)
+            try{
+                if(c>0&&c<=nrDateS)
                 {
-                    cout<<*Sal[c-1]<<endl;
+                    cout<<*Prod[c-1]<<endl;
+                    fisier<<*Prod[c-1]<<endl;
                 }
                 else
                 {
                     throw(c);
                 }
+            }
                 catch(int c)
             {
 
@@ -1412,6 +1430,11 @@ void menu()
         if(option==9)
         {
             //DOWNCASTING, UPCASTING
+            ofstream fisier;
+            fisier.open("datein.txt");
+            fisier <<"Clor";
+            fisier.close();
+
         }
         if(option==10)
         {
@@ -1421,9 +1444,10 @@ void menu()
             cout<<"Numarul de calorii necesare pentru mentinerea greutatii este: ";
             cout<<Clie[A-1]->calculNumarCalorii()<< ". \n";
         }
-        menu_output(Clie, nrDateC, Prod, nrDateP, Sal, nrDateS, nr);
-        cin>>option;
-        nr++;
+        if(option>10 || option<=0)
+        {
+            cout<<"Introduceti un numar valid"<<endl;
+        }
     }
     while (option!=0);
 }

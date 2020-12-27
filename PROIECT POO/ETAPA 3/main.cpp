@@ -1273,7 +1273,7 @@ void menu_output(vector<Client*> C,int  nrDateC, vector<Produse*> P, int nrDateP
 
 void menu()
 {
-    int option = 50;
+    int option = 0;
     vector<Client*> Clie;
     vector<Sala*> Sal;
     vector<Produse*> Prod;
@@ -1430,10 +1430,6 @@ void menu()
         if(option==9)
         {
             //DOWNCASTING, UPCASTING
-            ofstream fisier;
-            fisier.open("datein.txt");
-            fisier <<"Clor";
-            fisier.close();
 
         }
         if(option==10)

@@ -148,7 +148,7 @@ class Client
 
     }
     friend istream& operator>>(istream& in, Client& cl)
-    {
+    {//VARSTA STRICA VARIABILA GENUL[0], NU INTELEG DE CE.
 
         char aux[100];
 
@@ -1375,7 +1375,7 @@ void menu()
             cout<<"Momentan avem"<<nrDateP<<" produse."<<endl;
             cout<<"Alegeti produsul despre care vreti sa vorbim: "<<endl;
             cin>>c;
-            try(b>0&&b<=nrDateS)
+            try(c>0&&c<=nrDateS)
                 {
                     cout<<*Sal[c-1]<<endl;
                 }

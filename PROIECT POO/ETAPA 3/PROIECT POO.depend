@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1604864343 source:c:\users\denda\desktop\drive\proiecte poo\drobnitchi-daniel-poo\proiect poo\main.cpp
+	<iostream>
+	<cstring>
+
+1608999039 source:c:\users\denda\desktop\drive\proiecte poo\drobnitchi-daniel-poo\proiect poo\etapa 3\main.cpp
+	<iostream>
+	<cstring>
+	<cstdlib>
+	<vector>
+

@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include <list>
+#include <iterator>
 using namespace std;
 
 class Client
@@ -166,15 +167,16 @@ class Client
         cout<<"Introduceti varsta :\n";
         in>>cl.varsta;
 
-        cout<<"Introduceti numarul de marimi pe care vreti sa le introduceti : Inaltime / Bust/ Abdomen / Solduri (1/2/3/4)";
+        cout<<"Introduceti numarul de marimi pe care vreti sa le introduceti : Inaltime / Bust/ Abdomen / Solduri (1/2/3/4): \n";
         in>>cl.nrMarimi;
-        cout<<"Introduceti marimile \n";
+        cout<<"Introduceti marimile :\n";
         if(cl.marimi!=NULL)
             delete [] cl.marimi;
         cl.marimi = new int [cl.nrMarimi];
         for (int i = 0; i<cl.nrMarimi; i++)
             {
             in>>cl.marimi[i];
+            cout<<"\n";
             }
         cout<<"Introduceti greutatile (Greutatea actuala + Greutatea la care se doreste sa se ajunga) : \n";
         if(cl.greutate!=NULL)
@@ -182,17 +184,16 @@ class Client
         cl.greutate = new float [2];
         for (int i = 0; i<2; i++)
             {
-            cout   <<"Introduceti greutatea "<<i<<" \n";
+            cout   <<"Introduceti greutatea "<<i+1<<" :\n";
             in>>cl.greutate[i];
             }
         cout<<"Introduceti genul dumneavoastra : M / F ";
         in>>cl.genul[0];
-        cout<<&cl.genul[0];
         return in;
 
     }
 
-   /* const Client operator++()
+    const Client operator++()
     {
     this->varsta++;
     return *this;
@@ -204,7 +205,7 @@ class Client
         this->varsta++;
         return aux;
     }
-    */
+
 
     Client operator+(int a)
     {
@@ -368,9 +369,6 @@ class Client
 
         double calculNumarCalorii()
         {
-            cout<<this->greutate[0]<<endl;
-            cout<<this->marimi[0]<<endl;
-            cout<<this->varsta<<endl;
             if (strcmp(&this->genul[0], "F") == 0)
             this->numarCaloriiMentinere = 10 * this->greutate[0] + 6.25 * this->marimi[0] - 5*varsta + 5;
 
@@ -654,8 +652,9 @@ public:
     for (int i=0;i<this->nrCoordonate;i++)
         cout<<this->coordonate[i]<<" ";
 
+    cout<<endl;
 
-    cout<<"Aceasta are momentan "<< this->nrPersoane<<" abonate.";
+    cout<<"Aceasta are momentan "<< this->nrPersoane<<" persoana(e) abonate.";
     //cout<<"Sala este de tipul "<<this->conditie[1];
 
     }
@@ -918,8 +917,8 @@ public:
     }
     friend ostream& operator<<(ostream& out, const Produse& pr)
     {
-        out<<"\n Produsul cu numele "<<pr.numeProdus<<" si cu id-ul"<<pr.ID_produs<<" este disponibil "<<pr.disponibilitate;
-        out<<"Acesta are pretul de "<<pr.pret;
+        out<<"\n Produsul cu numele "<<pr.numeProdus<<" si cu id-ul "<<pr.ID_produs<<" este disponibil "<<pr.disponibilitate<<endl;
+        out<<"Acesta are pretul de "<<pr.pret<<".\n";
     }
     friend istream& operator>>(istream& in, Produse& pr)
     {
@@ -931,10 +930,10 @@ public:
         pr.numeProdus = new char[strlen(aux)+1];
         strcpy(pr.numeProdus,aux);
 
-        cout<<"Introduceti pretul :";
+        cout<<"Introduceti pretul :"<<endl;
         in>>pr.pret;
 
-        cout<<"Introduceti disponibilitatea";
+        cout<<"Introduceti disponibilitatea :"<<endl;
         in>>pr.disponibilitate;
 
         return in;
@@ -1249,7 +1248,7 @@ public:
 
 };
 
-void menu_output(vector<Client*> C,int  nrDateC, vector<Produse*> P, int nrDateP, vector<Sala*> S, int nrDateS, int nr)
+void menu_output(vector<Client*> C,int  nrDateC, vector<Produse*> P, int nrDateP, vector<Sala*> S, list <Imbracaminte*> Imbr, vector <Suplimente*> Supl, int nrDateS, int nr)
 {
     if(nr==0)
     {
@@ -1277,9 +1276,13 @@ void menu()
     vector<Client*> Clie;
     vector<Sala*> Sal;
     vector<Produse*> Prod;
+    list<Imbracaminte*> Imbr;
+    vector<Suplimente*> Supl;
     Client c1;
     Sala s2;
     Produse p1;
+    Imbracaminte i1;
+    Suplimente s1;
     int nrDateC = 0;
     int nrDateS = 0;
     int nrDateP = 0;
@@ -1289,7 +1292,7 @@ void menu()
     fisier.open("datein.txt");
     do
     {
-        menu_output(Clie, nrDateC, Prod, nrDateP, Sal, nrDateS, nr);
+        menu_output(Clie, nrDateC, Prod, nrDateP, Sal, Imbr, Supl, nrDateS, nr);
         cin>>option;
         nr++;
         if(option==0)
@@ -1313,9 +1316,27 @@ void menu()
             nrDateS++;
         }
         if(option==3)
-        {
-            cin>>p1;
-            Prod.push_back(&p1);
+        {   int c;
+            cout<<"Introduceti tipul de produs pe care vreti sa il puneti: 0 pentru produse normale, 1 pentru Imbracaminte si 2 pentru Suplimente.";
+            cin>>c;
+            if(c==0)
+            {
+                cin>>p1;
+                Prod.push_back(&p1);
+            }
+
+            //UPCASTING, INCA INVAT SA-L FOLOSESC.
+            if(c==1)
+            {
+                cin>>i1;
+                Imbr.push_back(&i1);
+                cout<<i1;
+            }
+            if(c==2)
+            {
+                cin>>s1;
+                Supl.push_back(&s1);
+            }
             nrDateP++;
         }
         if(option==4)
@@ -1425,20 +1446,36 @@ void menu()
         }
         if(option==8)
         {
-            //DOWNCASTING, UPCASTING
+            int nr3;
+            cout<<"Introduceti numarul suplimentului despre care vreti sa aflati detalii:"<<endl;
+            cin>>nr3;
+            cout<<Supl[nr3-1]->tipSupliment();
+
         }
         if(option==9)
         {
-            //DOWNCASTING, UPCASTING
-
+            char marime[1];
+            int nr2;
+            cout<<"Introduceti marimea dumneavoastra :\n";
+            cin>>marime;
+            cout<<"Introduceti numarul produsului pe care vreti sa-l testati:\n";
+            cin>>nr2;
+            //if(strcmp())
         }
         if(option==10)
         {
             int A;
+            if(nrDateC==0)
+            {
+                cout<<"Introduceti o persoana pentru a va putea oferi informatii: \n";
+            }
+            else if(nrDateC>=0)
+            {
             cout<<"Introduceti numarul persoanei :"<<endl;
             cin>>A;
             cout<<"Numarul de calorii necesare pentru mentinerea greutatii este: ";
             cout<<Clie[A-1]->calculNumarCalorii()<< ". \n";
+            }
         }
         if(option>10 || option<=0)
         {

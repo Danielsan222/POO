@@ -486,7 +486,7 @@ public:
     //this->conditie[1] = sl.conditie[1];
 }
 
-    Sala& operator= (const Sala& sl)
+    Sala& operator= (Sala& sl)
     {
     if (this!=&sl)
         {
@@ -1304,6 +1304,7 @@ void menu()
         if(option==1)
         {
             cin>>c1;
+            fisier<<c1;
             Clie.push_back(&c1);
             nrDateC++;
 
@@ -1312,6 +1313,7 @@ void menu()
         if(option==2)
         {
             s2.Citire();
+            fisier<<s2;
             Sal.push_back(&s2);
             nrDateS++;
         }
@@ -1323,6 +1325,7 @@ void menu()
             {
                 cin>>p1;
                 Prod.push_back(&p1);
+                fisier<<p1;
             }
 
             //UPCASTING, INCA INVAT SA-L FOLOSESC.
@@ -1330,12 +1333,13 @@ void menu()
             {
                 cin>>i1;
                 Imbr.push_back(&i1);
-                cout<<i1;
+                fisier<<i1;
             }
             if(c==2)
             {
                 cin>>s1;
                 Supl.push_back(&s1);
+                fisier<<s1;
             }
             nrDateP++;
         }
@@ -1449,7 +1453,7 @@ void menu()
             int nr3;
             cout<<"Introduceti numarul suplimentului despre care vreti sa aflati detalii:"<<endl;
             cin>>nr3;
-            cout<<Supl[nr3-1]->tipSupliment();
+            cout<<Supl[nr3-1]->tipSupliment()<<endl;
 
         }
         if(option==9)

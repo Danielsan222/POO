@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1610365345 source:c:\users\denda\desktop\drive\proiecte poo\drobnitchi-daniel-poo\testdelaborator\211_drobnitchi_daniel\main.cpp
+	<iostream>
+	<vector>
+	<cstring>
+	<list>
+
